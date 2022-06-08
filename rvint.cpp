@@ -1,3 +1,4 @@
+#include "tokenizer.h"
 #include <algorithm>
 #include <iostream>
 #include <fstream>
@@ -12,48 +13,26 @@
 // Lexer reads token char-by-char to see what type of token it will be
 // Basically should remove comments from being parsed
 
-std::vector<std::string> tokens;
-
-void print_tokens()
+class Rvint
 {
-    std::cout << "Tokens: { ";
-    for (const auto& token : tokens) { std::cout << token << " "; }
-    std::cout << "}\n";
-}
+public:
+    Tokenizer tokenizer;
 
-bool has_char(const std::string& s, char c)
-{
-    return s.find(c) != std::string::npos;
-}
-
-void remove_from_string(std::string& s, char c)
-{
-    s.erase(std::remove(s.begin(), s.end(), c), s.end());
-}
-
-void tokenize(char* line)
-{
-    char* curr_token;
-    curr_token = strtok(line, " ,:()");
-    while (curr_token != nullptr)
+    void parse_input(std::ifstream& file)
     {
-        tokens.push_back(curr_token);
-        curr_token = strtok(nullptr, " ,:()");
-    }
-}
+        std::string line;
 
-void parse_input(std::ifstream& file)
-{
-    std::string line;
-
-    while (std::getline(file, line)) 
-    {
-        char tokenizable_line[512];
-        strcpy(tokenizable_line, line.c_str());
-        tokenize(tokenizable_line);
+        while (std::getline(file, line)) 
+        {
+            // TODO check that this buffer is not overflown
+            char tokenizable_line[512];
+            strcpy(tokenizable_line, line.c_str());
+            tokenizer.tokenize(tokenizable_line);
+        }
+        tokenizer.print_tokens();
     }
-    print_tokens();
-}
+};
+
 
 int main(int argc, char* argv[])
 {
@@ -63,7 +42,9 @@ int main(int argc, char* argv[])
 
     if (!file.is_open()) { return 1; }
 
-    parse_input(file);
+    Rvint app;
+
+    app.parse_input(file);
 
     return 0;
 }
