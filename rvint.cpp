@@ -1,4 +1,3 @@
-#include "tokenizer.h"
 #include <algorithm>
 #include <iostream>
 #include <fstream>
@@ -9,14 +8,14 @@
 #include <stdio.h>
 #include <string.h>
 
-
-// Lexer reads token char-by-char to see what type of token it will be
-// Basically should remove comments from being parsed
+#include "parser.h"
+#include "tokenizer.h"
 
 class Rvint
 {
 public:
     Tokenizer tokenizer;
+    Parser parser;
 
     void parse_input(std::ifstream& file)
     {
@@ -29,7 +28,11 @@ public:
             strcpy(tokenizable_line, line.c_str());
             tokenizer.tokenize(tokenizable_line);
         }
-        tokenizer.print_tokens();
+
+        for (const auto& line : tokenizer.tokens)
+        {
+            parser.Parse(line);
+        }
     }
 };
 

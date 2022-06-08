@@ -1,4 +1,5 @@
-addi a0, zero, 42
-jal ra, doubler
-sub t3, t4, t2
+test_label:
+.test_directive i + 1
+.test_directive_with_comment i + 1 # this is a comment
+instruction arg1, arg2, arg3
 

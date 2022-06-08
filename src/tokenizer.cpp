@@ -20,12 +20,12 @@ void Tokenizer::print_tokens()
 void Tokenizer::tokenize(char* line)
 {
     char* curr_token;
-    curr_token = strtok(line, " ,:()");
+    curr_token = strtok(line, " ,()");
     std::vector<std::string> line_of_tokens;
     while (curr_token != nullptr)
     {
         line_of_tokens.push_back(curr_token);
-        curr_token = strtok(nullptr, " ,:()");
+        curr_token = strtok(nullptr, " ,()");
     }
     tokens.push_back(line_of_tokens);
 }
