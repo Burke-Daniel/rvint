@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "interpreter.h"
 #include "parser.h"
 #include "tokenizer.h"
 
@@ -16,6 +17,7 @@ class Rvint
 public:
     Tokenizer tokenizer;
     Parser parser;
+    Interpreter interpreter;
 
     void parse_input(std::ifstream& file)
     {
@@ -34,6 +36,17 @@ public:
             parser.Parse(line);
         }
     }
+
+    void interpret()
+    {
+        for (const auto& token : parser.tokens)
+        {
+            if (token->type == TokenType::Instruction)
+            {
+                interpreter.interpret();
+            }
+        }
+    }
 };
 
 
@@ -48,6 +61,7 @@ int main(int argc, char* argv[])
     Rvint app;
 
     app.parse_input(file);
+    app.interpret();
 
     return 0;
 }

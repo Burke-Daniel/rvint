@@ -8,6 +8,7 @@ set(src_files
    rvint.cpp 
    src/parser.cpp
    src/tokenizer.cpp
+   src/interpreter.cpp
 )
 
 add_executable(rvint ${src_files})

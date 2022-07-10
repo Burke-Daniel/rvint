@@ -1,2 +1,2 @@
 # rvint
-Risc-V Intepreter written in Python.
+Risc-V Intepreter written in C++.
