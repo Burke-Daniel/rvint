@@ -1,0 +1,3 @@
+addi a0, zero, 42
+jal ra, doubler
+sub t3, t4, t2
