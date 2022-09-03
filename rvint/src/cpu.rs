@@ -33,6 +33,22 @@ impl Cpu {
     }
 
     pub fn execute_instruction(&mut self, instruction: &Instruction) {
+        let arithmetic_instructions = [
+            "add",
+            "sub",
+            "mul",
+            "div",
+            "and",
+            "or",
+            "xor",
+        ];
+        
+        if arithmetic_instructions.contains(&instruction.opcode.to_lowercase().as_str()) {
+            self.handle_arithmetic_instruction(instruction);
+        }
+    }
+
+    fn handle_arithmetic_instruction(&mut self, instruction: &Instruction) {
         match instruction.opcode.to_lowercase().as_str() {
             "add" => {
                 println!("Add instruction!");
