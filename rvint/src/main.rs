@@ -23,17 +23,33 @@ impl Cpu {
         }
     }
 
+    fn parse_args_arithmetic(&self, instruction: &Instruction) -> (usize, usize, usize) {
+        assert!(instruction.args.len() == 3);
+        let dest = instruction.args[0].parse::<usize>().unwrap();
+        let a1 = instruction.args[1].parse::<usize>().unwrap();
+        let a2 = instruction.args[2].parse::<usize>().unwrap();
+
+        return (dest, a1, a2);
+    }
+
     fn execute_instruction(&mut self, instruction: &Instruction) {
         match instruction.opcode.to_lowercase().as_str() {
             "add" => {
                 println!("Add instruction!");
                 assert!(instruction.args.len() == 3);
-                let dest = instruction.args[0].parse::<usize>().unwrap();
-                let a1 = instruction.args[1].parse::<usize>().unwrap();
-                let a2 = instruction.args[2].parse::<usize>().unwrap();
+                let (dest, a1, a2) = self.parse_args_arithmetic(instruction);
 
                 assert!(dest <= 32);
                 self.gp_regs[dest] = self.gp_regs[a1] + self.gp_regs[a2];
+                self.pc += 1;
+            }
+            "sub" => {
+                println!("Sub instruction!");
+                assert!(instruction.args.len() == 3);
+                let (dest, a1, a2) = self.parse_args_arithmetic(instruction);
+
+                assert!(dest <= 32);
+                self.gp_regs[dest] = self.gp_regs[a1] - self.gp_regs[a2];
                 self.pc += 1;
             }
             _ => {
