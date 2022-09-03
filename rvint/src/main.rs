@@ -36,6 +36,20 @@ impl Cpu {
             _ => { println!("Invalid Instruction. Skipping..."); }
         }
     }
+
+    fn print_gp_reg_vals(&self) {
+        println!("GP Reg values:");
+        for (reg_num, reg_val) in self.gp_regs.iter().enumerate() {
+            println!("{reg_num}: {reg_val}");
+        }
+    }
+
+    fn print_fp_reg_vals(&self) {
+        println!("FP Reg values:");
+        for (reg_num, reg_val) in self.fp_regs.iter().enumerate() {
+            println!("{reg_num}: {reg_val}");
+        }
+    }
 }
 
 pub struct Instruction {
@@ -106,5 +120,9 @@ fn main() {
     program.parse(&contents);
     program.print();
 
+    cpu.print_gp_reg_vals();
+    cpu.print_fp_reg_vals();
     cpu.run(&program.instructions);
+    cpu.print_gp_reg_vals();
+    cpu.print_fp_reg_vals();
 }
