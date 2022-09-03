@@ -215,3 +215,71 @@ impl Cpu {
         }
     }
 }
+
+#[test]
+fn test_add_instruction() {
+    let mut cpu = Cpu::new();
+
+    cpu.gp_regs[1] = 2;
+    cpu.gp_regs[2] = 3;
+
+    let instruction = Instruction {
+        opcode: "add".to_string(),
+        args: vec![ "0".to_string(), "1".to_string(), "2".to_string() ],
+    };
+
+    cpu.execute_instruction(&instruction);
+
+    assert!(cpu.gp_regs[0] == 5);
+}
+
+#[test]
+fn test_sub_instruction() {
+    let mut cpu = Cpu::new();
+
+    cpu.gp_regs[1] = 3;
+    cpu.gp_regs[2] = 2;
+
+    let instruction = Instruction {
+        opcode: "sub".to_string(),
+        args: vec![ "0".to_string(), "1".to_string(), "2".to_string() ],
+    };
+
+    cpu.execute_instruction(&instruction);
+
+    assert!(cpu.gp_regs[0] == 1);
+}
+
+#[test]
+fn test_mul_instruction() {
+    let mut cpu = Cpu::new();
+
+    cpu.gp_regs[1] = 3;
+    cpu.gp_regs[2] = 2;
+
+    let instruction = Instruction {
+        opcode: "mul".to_string(),
+        args: vec![ "0".to_string(), "1".to_string(), "2".to_string() ],
+    };
+
+    cpu.execute_instruction(&instruction);
+
+    assert!(cpu.gp_regs[0] == 6);
+}
+
+#[test]
+fn test_div_instruction() {
+    let mut cpu = Cpu::new();
+
+    cpu.gp_regs[1] = 3;
+    cpu.gp_regs[2] = 2;
+
+    let instruction = Instruction {
+        opcode: "div".to_string(),
+        args: vec![ "0".to_string(), "1".to_string(), "2".to_string() ],
+    };
+
+    cpu.execute_instruction(&instruction);
+
+    assert!(cpu.gp_regs[0] == 1);
+}
