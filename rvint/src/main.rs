@@ -59,12 +59,7 @@ fn main() {
     program.parse(&contents);
     program.print();
 
-    // Test add instruction
-    cpu.gp_regs[1] = 2;
-    cpu.gp_regs[2] = 3;
-
     cpu.run(&program.instructions);
 
-    assert!(cpu.gp_regs[0] == 5);
     cpu.print_gp_reg_vals();
 }

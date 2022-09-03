@@ -147,7 +147,7 @@ impl Cpu {
     fn handle_immediate_arithmetic_instruction(&mut self, instruction: &Instruction) {
         match instruction.opcode.to_lowercase().as_str() {
             "addi" => {
-                println!("Add instruction!");
+                println!("Addi instruction!");
                 assert!(instruction.args.len() == 3);
                 let (dest, a1, a2) = self.parse_args_immediate_arithmetic(instruction);
 
@@ -156,7 +156,7 @@ impl Cpu {
                 self.pc += 1;
             }
             "subi" => {
-                println!("Sub instruction!");
+                println!("Subi instruction!");
                 assert!(instruction.args.len() == 3);
                 let (dest, a1, a2) = self.parse_args_immediate_arithmetic(instruction);
 
@@ -165,7 +165,7 @@ impl Cpu {
                 self.pc += 1;
             }
             "andi" => {
-                println!("And instruction!");
+                println!("Andi instruction!");
                 assert!(instruction.args.len() == 3);
                 let (dest, a1, a2) = self.parse_args_immediate_arithmetic(instruction);
 
@@ -174,7 +174,7 @@ impl Cpu {
                 self.pc += 1;
             }
             "ori" => {
-                println!("Or instruction!");
+                println!("Ori instruction!");
                 assert!(instruction.args.len() == 3);
                 let (dest, a1, a2) = self.parse_args_immediate_arithmetic(instruction);
 
@@ -183,7 +183,7 @@ impl Cpu {
                 self.pc += 1;
             }
             "xori" => {
-                println!("Xor instruction!");
+                println!("Xori instruction!");
                 assert!(instruction.args.len() == 3);
                 let (dest, a1, a2) = self.parse_args_immediate_arithmetic(instruction);
 
