@@ -28,7 +28,7 @@ impl Cpu {
                 assert!(instruction.args.len() == 3);
                 let dest = instruction.args[0].parse::<usize>().unwrap();
                 let a1 = instruction.args[1].parse::<usize>().unwrap();
-                let a2 = instruction.args[1].parse::<usize>().unwrap();
+                let a2 = instruction.args[2].parse::<usize>().unwrap();
 
                 assert!(dest <= 32);
                 self.gp_regs[dest] = self.gp_regs[a1] + self.gp_regs[a2];
@@ -120,9 +120,11 @@ fn main() {
     program.parse(&contents);
     program.print();
 
-    cpu.print_gp_reg_vals();
-    cpu.print_fp_reg_vals();
+    // Test add instruction
+    cpu.gp_regs[1] = 2;
+    cpu.gp_regs[2] = 3;
+
     cpu.run(&program.instructions);
-    cpu.print_gp_reg_vals();
-    cpu.print_fp_reg_vals();
+
+    assert!(cpu.gp_regs[0] == 5);
 }
