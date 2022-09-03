@@ -32,6 +32,15 @@ impl Cpu {
         return (dest, a1, a2);
     }
 
+    pub fn parse_args_immediate_arithmetic(&self, instruction: &Instruction) -> (usize, usize, u32) {
+        assert!(instruction.args.len() == 3);
+        let dest = instruction.args[0].parse::<usize>().unwrap();
+        let a1 = instruction.args[1].parse::<usize>().unwrap();
+        let a2 = instruction.args[2].parse::<u32>().unwrap();
+
+        return (dest, a1, a2);
+    }
+
     pub fn execute_instruction(&mut self, instruction: &Instruction) {
         let arithmetic_instructions = [
             "add",
@@ -42,9 +51,21 @@ impl Cpu {
             "or",
             "xor",
         ];
+
+        let immediate_arithmetic_instructions = [
+            "addi",
+            "subi",
+            "muli",
+            "divi",
+            "andi",
+            "ori",
+            "xori",
+        ];
         
         if arithmetic_instructions.contains(&instruction.opcode.to_lowercase().as_str()) {
             self.handle_arithmetic_instruction(instruction);
+        } else if immediate_arithmetic_instructions.contains(&instruction.opcode.to_lowercase().as_str()) {
+            self.handle_immediate_arithmetic_instruction(instruction);
         }
     }
 
@@ -111,6 +132,63 @@ impl Cpu {
 
                 assert!(dest <= 32);
                 self.gp_regs[dest] = self.gp_regs[a1] ^ self.gp_regs[a2];
+                self.pc += 1;
+            }
+            _ => {
+                println!("Invalid Instruction. Skipping...");
+                
+                // TODO change
+                // Not very clean way to terminate program cleanly on invalid instruction
+                self.pc = usize::MAX;
+            }
+        }
+    }
+
+    fn handle_immediate_arithmetic_instruction(&mut self, instruction: &Instruction) {
+        match instruction.opcode.to_lowercase().as_str() {
+            "addi" => {
+                println!("Add instruction!");
+                assert!(instruction.args.len() == 3);
+                let (dest, a1, a2) = self.parse_args_immediate_arithmetic(instruction);
+
+                assert!(dest <= 32);
+                self.gp_regs[dest] = self.gp_regs[a1] + a2;
+                self.pc += 1;
+            }
+            "subi" => {
+                println!("Sub instruction!");
+                assert!(instruction.args.len() == 3);
+                let (dest, a1, a2) = self.parse_args_immediate_arithmetic(instruction);
+
+                assert!(dest <= 32);
+                self.gp_regs[dest] = self.gp_regs[a1] - a2;
+                self.pc += 1;
+            }
+            "andi" => {
+                println!("And instruction!");
+                assert!(instruction.args.len() == 3);
+                let (dest, a1, a2) = self.parse_args_immediate_arithmetic(instruction);
+
+                assert!(dest <= 32);
+                self.gp_regs[dest] = self.gp_regs[a1] & a2;
+                self.pc += 1;
+            }
+            "ori" => {
+                println!("Or instruction!");
+                assert!(instruction.args.len() == 3);
+                let (dest, a1, a2) = self.parse_args_immediate_arithmetic(instruction);
+
+                assert!(dest <= 32);
+                self.gp_regs[dest] = self.gp_regs[a1] | a2;
+                self.pc += 1;
+            }
+            "xori" => {
+                println!("Xor instruction!");
+                assert!(instruction.args.len() == 3);
+                let (dest, a1, a2) = self.parse_args_immediate_arithmetic(instruction);
+
+                assert!(dest <= 32);
+                self.gp_regs[dest] = self.gp_regs[a1] ^ a2;
                 self.pc += 1;
             }
             _ => {
