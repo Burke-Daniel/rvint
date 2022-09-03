@@ -52,6 +52,24 @@ impl Cpu {
                 self.gp_regs[dest] = self.gp_regs[a1] - self.gp_regs[a2];
                 self.pc += 1;
             }
+            "mul" => {
+                println!("Mul instruction!");
+                assert!(instruction.args.len() == 3);
+                let (dest, a1, a2) = self.parse_args_arithmetic(instruction);
+
+                assert!(dest <= 32);
+                self.gp_regs[dest] = self.gp_regs[a1] * self.gp_regs[a2];
+                self.pc += 1;
+            }
+            "div" => {
+                println!("Div instruction!");
+                assert!(instruction.args.len() == 3);
+                let (dest, a1, a2) = self.parse_args_arithmetic(instruction);
+
+                assert!(dest <= 32 && self.gp_regs[a2] != 0);
+                self.gp_regs[dest] = self.gp_regs[a1] / self.gp_regs[a2];
+                self.pc += 1;
+            }
             _ => {
                 println!("Invalid Instruction. Skipping...");
                 
@@ -152,4 +170,5 @@ fn main() {
     cpu.run(&program.instructions);
 
     assert!(cpu.gp_regs[0] == 5);
+    cpu.print_gp_reg_vals();
 }
