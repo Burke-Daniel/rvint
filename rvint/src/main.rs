@@ -18,7 +18,9 @@ impl Cpu {
     }
 
     fn run(&mut self, instructions: &Vec<Instruction>) {
-        self.execute_instruction(&instructions[self.pc]);
+        while self.pc < instructions.len() {
+            self.execute_instruction(&instructions[self.pc]);
+        }
     }
 
     fn execute_instruction(&mut self, instruction: &Instruction) {
@@ -32,8 +34,15 @@ impl Cpu {
 
                 assert!(dest <= 32);
                 self.gp_regs[dest] = self.gp_regs[a1] + self.gp_regs[a2];
+                self.pc += 1;
             }
-            _ => { println!("Invalid Instruction. Skipping..."); }
+            _ => {
+                println!("Invalid Instruction. Skipping...");
+                
+                // TODO change
+                // Not very clean way to terminate program cleanly on invalid instruction
+                self.pc = usize::MAX;
+            }
         }
     }
 
