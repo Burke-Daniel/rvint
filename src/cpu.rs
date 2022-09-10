@@ -84,6 +84,34 @@ impl Cpu {
         }
     }
 
+    fn handle_arithmetic_instruction(&mut self, instruction: &Instruction) {
+        println!("{} instruction!", instruction.opcode);
+        if instruction.opcode != "lui" {
+            assert!(instruction.args.len() == 3);
+            let (dest, a1, a2): (usize, usize, usize) = self.parse_three_args(instruction);
+            assert!(dest <= 32);
+
+            self.perform_arithmetic_operation(&instruction.opcode, dest, a1, a2);
+            self.pc += 1;
+        } else {
+            assert!(instruction.args.len() == 2);
+            let (dest, a1): (usize, u32) = self.parse_two_args(instruction);
+            assert!(dest <= 32);
+
+            self.gp_regs[dest] = a1 << 12;
+        }
+    }
+
+    fn handle_immediate_arithmetic_instruction(&mut self, instruction: &Instruction) {
+        println!("{} instruction!", instruction.opcode);
+        assert!(instruction.args.len() == 3);
+        let (dest, a1, a2): (usize, usize, u32) = self.parse_three_args(instruction);
+        assert!(dest <= 32);
+
+        self.perform_immediate_arithmetic_operation(&instruction.opcode, dest, a1, a2);
+        self.pc += 1;
+    }
+
     fn perform_arithmetic_operation(&mut self, opcode: &String, dest: usize, a1: usize, a2: usize) {
         match opcode.to_lowercase().as_str() {
             "add" => {
@@ -158,34 +186,6 @@ impl Cpu {
             }
             _ => todo!()
         }
-    }
-
-    fn handle_arithmetic_instruction(&mut self, instruction: &Instruction) {
-        println!("{} instruction!", instruction.opcode);
-        if instruction.opcode != "lui" {
-            assert!(instruction.args.len() == 3);
-            let (dest, a1, a2): (usize, usize, usize) = self.parse_three_args(instruction);
-            assert!(dest <= 32);
-
-            self.perform_arithmetic_operation(&instruction.opcode, dest, a1, a2);
-            self.pc += 1;
-        } else {
-            assert!(instruction.args.len() == 2);
-            let (dest, a1): (usize, u32) = self.parse_two_args(instruction);
-            assert!(dest <= 32);
-
-            self.gp_regs[dest] = a1 << 12;
-        }
-    }
-
-    fn handle_immediate_arithmetic_instruction(&mut self, instruction: &Instruction) {
-        println!("{} instruction!", instruction.opcode);
-        assert!(instruction.args.len() == 3);
-        let (dest, a1, a2): (usize, usize, u32) = self.parse_three_args(instruction);
-        assert!(dest <= 32);
-
-        self.perform_immediate_arithmetic_operation(&instruction.opcode, dest, a1, a2);
-        self.pc += 1;
     }
 
     pub fn print_gp_reg_vals(&self) {
