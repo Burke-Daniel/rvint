@@ -55,8 +55,6 @@ impl Cpu {
         let immediate_arithmetic_instructions = [
             "addi",
             "subi",
-            "muli",
-            "divi",
             "andi",
             "ori",
             "xori",
