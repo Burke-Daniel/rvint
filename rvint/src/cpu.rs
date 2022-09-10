@@ -1,3 +1,5 @@
+use std::{str::FromStr, fmt::Debug};
+
 use crate::instruction::Instruction;
 
 pub struct Cpu {
@@ -23,37 +25,26 @@ impl Cpu {
         }
     }
 
-    pub fn parse_args_arithmetic_u32(&self, instruction: &Instruction) -> (usize, u32, u32) {
+    pub fn parse_three_args<Dest, A1, A2>(&self, instruction: &Instruction) -> (Dest, A1, A2)
+    where Dest: FromStr + Debug, <Dest as FromStr>::Err : Debug,
+        A1: FromStr + Debug, <A1 as FromStr>::Err : Debug,
+        A2: FromStr + Debug, <A2 as FromStr>::Err : Debug,
+    {
         assert!(instruction.args.len() == 3);
-        let dest = instruction.args[0].parse::<usize>().unwrap();
-        let a1 = instruction.args[1].parse::<u32>().unwrap();
-        let a2 = instruction.args[2].parse::<u32>().unwrap();
+        let dest = instruction.args[0].parse::<Dest>().unwrap();
+        let a1 = instruction.args[1].parse::<A1>().unwrap();
+        let a2 = instruction.args[2].parse::<A2>().unwrap();
 
         return (dest, a1, a2);
     }
 
-    pub fn parse_args_arithmetic(&self, instruction: &Instruction) -> (usize, usize, usize) {
+    pub fn parse_two_args<Dest, A1>(&self, instruction: &Instruction) -> (Dest, A1)
+    where Dest: FromStr + Debug, <Dest as FromStr>::Err : Debug,
+        A1: FromStr + Debug, <A1 as FromStr>::Err : Debug,
+    {
         assert!(instruction.args.len() == 3);
-        let dest = instruction.args[0].parse::<usize>().unwrap();
-        let a1 = instruction.args[1].parse::<usize>().unwrap();
-        let a2 = instruction.args[2].parse::<usize>().unwrap();
-
-        return (dest, a1, a2);
-    }
-
-    pub fn parse_args_immediate_arithmetic(&self, instruction: &Instruction) -> (usize, usize, u32) {
-        assert!(instruction.args.len() == 3);
-        let dest = instruction.args[0].parse::<usize>().unwrap();
-        let a1 = instruction.args[1].parse::<usize>().unwrap();
-        let a2 = instruction.args[2].parse::<u32>().unwrap();
-
-        return (dest, a1, a2);
-    }
-
-    pub fn parse_args_lui(&self, instruction: &Instruction) -> (usize, usize) {
-        assert!(instruction.args.len() == 2);
-        let dest = instruction.args[0].parse::<usize>().unwrap();
-        let a1 = instruction.args[1].parse::<usize>().unwrap();
+        let dest = instruction.args[0].parse::<Dest>().unwrap();
+        let a1 = instruction.args[1].parse::<A1>().unwrap();
 
         return (dest, a1);
     }
@@ -98,7 +89,7 @@ impl Cpu {
             "add" => {
                 println!("Add instruction!");
                 assert!(instruction.args.len() == 3);
-                let (dest, a1, a2) = self.parse_args_arithmetic(instruction);
+                let (dest, a1, a2): (usize, usize, usize) = self.parse_three_args(instruction);
 
                 assert!(dest <= 32);
                 self.gp_regs[dest] = self.gp_regs[a1] + self.gp_regs[a2];
@@ -107,7 +98,7 @@ impl Cpu {
             "sub" => {
                 println!("Sub instruction!");
                 assert!(instruction.args.len() == 3);
-                let (dest, a1, a2) = self.parse_args_arithmetic(instruction);
+                let (dest, a1, a2): (usize, usize, usize) = self.parse_three_args(instruction);
 
                 assert!(dest <= 32);
                 self.gp_regs[dest] = self.gp_regs[a1] - self.gp_regs[a2];
@@ -116,7 +107,7 @@ impl Cpu {
             "mul" => {
                 println!("Mul instruction!");
                 assert!(instruction.args.len() == 3);
-                let (dest, a1, a2) = self.parse_args_arithmetic(instruction);
+                let (dest, a1, a2): (usize, usize, usize) = self.parse_three_args(instruction);
 
                 assert!(dest <= 32);
                 self.gp_regs[dest] = self.gp_regs[a1] * self.gp_regs[a2];
@@ -125,7 +116,7 @@ impl Cpu {
             "div" => {
                 println!("Div instruction!");
                 assert!(instruction.args.len() == 3);
-                let (dest, a1, a2) = self.parse_args_arithmetic(instruction);
+                let (dest, a1, a2): (usize, usize, usize) = self.parse_three_args(instruction);
 
                 assert!(dest <= 32 && self.gp_regs[a2] != 0);
                 self.gp_regs[dest] = self.gp_regs[a1] / self.gp_regs[a2];
@@ -134,7 +125,7 @@ impl Cpu {
             "and" => {
                 println!("And instruction!");
                 assert!(instruction.args.len() == 3);
-                let (dest, a1, a2) = self.parse_args_arithmetic(instruction);
+                let (dest, a1, a2): (usize, usize, usize) = self.parse_three_args(instruction);
 
                 assert!(dest <= 32);
                 self.gp_regs[dest] = self.gp_regs[a1] & self.gp_regs[a2];
@@ -143,7 +134,7 @@ impl Cpu {
             "or" => {
                 println!("Or instruction!");
                 assert!(instruction.args.len() == 3);
-                let (dest, a1, a2) = self.parse_args_arithmetic(instruction);
+                let (dest, a1, a2): (usize, usize, usize) = self.parse_three_args(instruction);
 
                 assert!(dest <= 32);
                 self.gp_regs[dest] = self.gp_regs[a1] | self.gp_regs[a2];
@@ -152,7 +143,7 @@ impl Cpu {
             "xor" => {
                 println!("Xor instruction!");
                 assert!(instruction.args.len() == 3);
-                let (dest, a1, a2) = self.parse_args_arithmetic(instruction);
+                let (dest, a1, a2): (usize, usize, usize) = self.parse_three_args(instruction);
 
                 assert!(dest <= 32);
                 self.gp_regs[dest] = self.gp_regs[a1] ^ self.gp_regs[a2];
@@ -161,7 +152,7 @@ impl Cpu {
             "slt" => {
                 println!("Slt instruction!");
                 assert!(instruction.args.len() == 3);
-                let (dest, a1, a2) = self.parse_args_arithmetic(instruction);
+                let (dest, a1, a2): (usize, usize, usize) = self.parse_three_args(instruction);
 
                 assert!(dest <= 32);
                 self.gp_regs[dest] = if self.gp_regs[a1] < self.gp_regs[a2] { 1 } else { 0 };
@@ -171,7 +162,7 @@ impl Cpu {
                 // TODO differentiate between signed and unsigned
                 println!("Sltu instruction!");
                 assert!(instruction.args.len() == 3);
-                let (dest, a1, a2) = self.parse_args_arithmetic(instruction);
+                let (dest, a1, a2): (usize, usize, usize) = self.parse_three_args(instruction);
 
                 assert!(dest <= 32);
                 self.gp_regs[dest] = if self.gp_regs[a1] < self.gp_regs[a2] { 1 } else { 0 };
@@ -180,7 +171,7 @@ impl Cpu {
             "lui" => {
                 println!("Lui instruction!");
                 assert!(instruction.args.len() == 3);
-                let (dest, a1) = self.parse_args_lui(instruction);
+                let (dest, a1): (usize, usize) = self.parse_two_args(instruction);
 
                 assert!(dest <= 32);
                 self.gp_regs[dest] = self.gp_regs[a1] << 12;
@@ -190,7 +181,7 @@ impl Cpu {
             "sll" => {
                 println!("Sll instruction!");
                 assert!(instruction.args.len() == 3);
-                let (dest, a1, a2) = self.parse_args_arithmetic(instruction);
+                let (dest, a1, a2): (usize, usize, usize) = self.parse_three_args(instruction);
 
                 assert!(dest <= 32);
                 self.gp_regs[dest] = self.gp_regs[a1] << self.gp_regs[a2];
@@ -199,7 +190,7 @@ impl Cpu {
             "srl" => {
                 println!("Srl instruction!");
                 assert!(instruction.args.len() == 3);
-                let (dest, a1, a2) = self.parse_args_arithmetic(instruction);
+                let (dest, a1, a2): (usize, usize, usize) = self.parse_three_args(instruction);
 
                 assert!(dest <= 32);
                 self.gp_regs[dest] = self.gp_regs[a1] >> self.gp_regs[a2];
@@ -208,11 +199,11 @@ impl Cpu {
             "sra" => {
                 println!("Sra instruction!");
                 assert!(instruction.args.len() == 3);
-                let (dest, a1, a2) = self.parse_args_arithmetic(instruction);
+                let (dest, a1, a2): (usize, usize, usize) = self.parse_three_args(instruction);
 
                 // TODO test that this is correct
                 assert!(dest <= 32);
-                let msb: u32 = self.gp_regs[a1] & (1 << 32);
+                let msb: u32 = self.gp_regs[a1] & (1 << 31);
                 self.gp_regs[dest] = (self.gp_regs[a1] >> self.gp_regs[a2]) & msb;
                 self.pc += 1;
             }
@@ -231,7 +222,7 @@ impl Cpu {
             "addi" => {
                 println!("Addi instruction!");
                 assert!(instruction.args.len() == 3);
-                let (dest, a1, a2) = self.parse_args_immediate_arithmetic(instruction);
+                let (dest, a1, a2): (usize, usize, u32) = self.parse_three_args(instruction);
 
                 assert!(dest <= 32);
                 self.gp_regs[dest] = self.gp_regs[a1] + a2;
@@ -240,7 +231,7 @@ impl Cpu {
             "subi" => {
                 println!("Subi instruction!");
                 assert!(instruction.args.len() == 3);
-                let (dest, a1, a2) = self.parse_args_immediate_arithmetic(instruction);
+                let (dest, a1, a2): (usize, usize, u32) = self.parse_three_args(instruction);
 
                 assert!(dest <= 32);
                 self.gp_regs[dest] = self.gp_regs[a1] - a2;
@@ -249,7 +240,7 @@ impl Cpu {
             "andi" => {
                 println!("Andi instruction!");
                 assert!(instruction.args.len() == 3);
-                let (dest, a1, a2) = self.parse_args_immediate_arithmetic(instruction);
+                let (dest, a1, a2): (usize, usize, u32) = self.parse_three_args(instruction);
 
                 assert!(dest <= 32);
                 self.gp_regs[dest] = self.gp_regs[a1] & a2;
@@ -258,7 +249,7 @@ impl Cpu {
             "ori" => {
                 println!("Ori instruction!");
                 assert!(instruction.args.len() == 3);
-                let (dest, a1, a2) = self.parse_args_immediate_arithmetic(instruction);
+                let (dest, a1, a2): (usize, usize, u32) = self.parse_three_args(instruction);
 
                 assert!(dest <= 32);
                 self.gp_regs[dest] = self.gp_regs[a1] | a2;
@@ -267,7 +258,7 @@ impl Cpu {
             "xori" => {
                 println!("Xori instruction!");
                 assert!(instruction.args.len() == 3);
-                let (dest, a1, a2) = self.parse_args_immediate_arithmetic(instruction);
+                let (dest, a1, a2): (usize, usize, u32) = self.parse_three_args(instruction);
 
                 assert!(dest <= 32);
                 self.gp_regs[dest] = self.gp_regs[a1] ^ a2;
@@ -276,7 +267,7 @@ impl Cpu {
             "slli" => {
                 println!("Slli instruction!");
                 assert!(instruction.args.len() == 3);
-                let (dest, a1, a2) = self.parse_args_immediate_arithmetic(instruction);
+                let (dest, a1, a2): (usize, usize, u32) = self.parse_three_args(instruction);
 
                 assert!(dest <= 32);
                 self.gp_regs[dest] = self.gp_regs[a1] << a2;
@@ -285,7 +276,7 @@ impl Cpu {
             "srli" => {
                 println!("Srli instruction!");
                 assert!(instruction.args.len() == 3);
-                let (dest, a1, a2) = self.parse_args_immediate_arithmetic(instruction);
+                let (dest, a1, a2): (usize, usize, u32) = self.parse_three_args(instruction);
 
                 assert!(dest <= 32);
                 self.gp_regs[dest] = self.gp_regs[a1] >> a2;
@@ -294,11 +285,11 @@ impl Cpu {
             "srai" => {
                 println!("Sra instruction!");
                 assert!(instruction.args.len() == 3);
-                let (dest, a1, a2) = self.parse_args_immediate_arithmetic(instruction);
+                let (dest, a1, a2): (usize, usize, u32) = self.parse_three_args(instruction);
 
                 // TODO test that this is correct
                 assert!(dest <= 32);
-                let msb: u32 = self.gp_regs[a1] & (1 << 32);
+                let msb: u32 = self.gp_regs[a1] & (1 << 31);
                 self.gp_regs[dest] = (self.gp_regs[a1] >> a2) & msb;
                 self.pc += 1;
             }
