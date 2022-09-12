@@ -4,7 +4,7 @@ mod parser;
 
 use std::fs;
 use instruction::Instruction;
-use parser::parse;
+use parser::Parser;
 
 
 pub struct Program {
@@ -35,7 +35,9 @@ fn main() {
     let mut cpu = cpu::Cpu::new();
     let mut program = Program::new();
 
-    program.instructions = parse(&contents);
+    let mut parser = Parser::new(contents);
+    parser.parse();
+
     program.print();
 
     cpu.run(&program.instructions);
