@@ -76,11 +76,28 @@ impl Cpu {
             "srli",
             "srai",
         ];
+
+        let load_store_instructions = [
+            "ld",
+            "lw",
+            "lh",
+            "lb",
+            "ldu",
+            "lwu",
+            "lhu",
+            "lbu",
+            "sd",
+            "sw",
+            "sh",
+            "sb",
+        ];
         
         if arithmetic_instructions.contains(&instruction.opcode.to_lowercase().as_str()) {
             self.handle_arithmetic_instruction(instruction);
         } else if immediate_arithmetic_instructions.contains(&instruction.opcode.to_lowercase().as_str()) {
             self.handle_immediate_arithmetic_instruction(instruction);
+        } else if load_store_instructions.contains(&instruction.opcode.to_lowercase().as_str()) {
+
         }
     }
 
@@ -110,6 +127,11 @@ impl Cpu {
 
         self.perform_immediate_arithmetic_operation(&instruction.opcode, dest, a1, a2);
         self.pc += 1;
+    }
+
+    fn handle_load_store_instruction(&mut self, instruction: &Instruction) {
+        println!("{} instruction!", instruction.opcode);
+        assert!(instruction.args.len() == 2);
     }
 
     fn perform_arithmetic_operation(&mut self, opcode: &String, dest: usize, a1: usize, a2: usize) {
