@@ -6,6 +6,7 @@ pub struct Parser {
     tokens: Vec<Token>
 }
 
+#[derive(PartialEq)]
 enum Token {
     Symbol(String),
     LeftParen,
@@ -63,6 +64,7 @@ impl Parser {
                     while self.is_newline(current_char.unwrap()) || self.is_space(current_char.unwrap()) {
                         current_char = program_iter.next();
                         if current_char == None {
+                            self.tokens.push(Token::EndOfFile);
                             break;
                         }
                     }
@@ -91,9 +93,14 @@ impl Parser {
                     self.tokens.push(Token::Comment);
                     while !self.is_newline(current_char.unwrap()) {
                         current_char = program_iter.next();
+                        if current_char == None {
+                            self.tokens.push(Token::EndOfFile);
+                            break;
+                        }
                     }
                 }
                 None => {
+                    self.tokens.push(Token::EndOfFile);
                     break;
                 }
                 _ => {
@@ -107,6 +114,8 @@ impl Parser {
                 }
             }
         }
+
+        assert!(self.tokens.iter().last() == Some(&Token::EndOfFile));
     }
 
     fn skip_spaces(&self, mut current_char: Option<char>, chars: &mut Chars) -> Option<char> {
@@ -119,6 +128,18 @@ impl Parser {
 
     pub fn parse(&mut self) {
         self.tokenize();
-        println!("Hello world!")
+
+        let mut token_iter = self.tokens.iter().peekable();
+        let mut current_token = token_iter.next();
+
+        while (current_token != Some(&Token::EndOfFile)) {
+            if (token_iter.peek() == Some(&&Token::Colon)) {
+                self.label()
+            }
+        }
+    }
+
+    fn label(&self) {
+
     }
 }
