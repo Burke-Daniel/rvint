@@ -1,6 +1,8 @@
 use core::str::Chars;
 use std::thread::current;
 
+use crate::instruction;
+
 pub struct Parser {
     program: String,
     tokens: Vec<Token>
@@ -132,14 +134,28 @@ impl Parser {
         let mut token_iter = self.tokens.iter().peekable();
         let mut current_token = token_iter.next();
 
-        while (current_token != Some(&Token::EndOfFile)) {
-            if (token_iter.peek() == Some(&&Token::Colon)) {
-                self.label()
+        while current_token != Some(&Token::EndOfFile) {
+            match token_iter.peek() {
+                Some(Token::Colon) => self.label(),
+                // TODO potentially prevent directive and instruction from being on the same line?
+                Some(Token::Dot) => self.directive(),
+                Some(Token::Symbol(..)) => self.instruction(),
+                Some(Token::Comment) => current_token = token_iter.next(),
+                None => todo!(),
+                _ => todo!(),
             }
         }
     }
 
     fn label(&self) {
+
+    }
+
+    fn directive(&self) {
+
+    }
+
+    fn instruction(&self) {
 
     }
 }
